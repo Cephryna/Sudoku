@@ -2,7 +2,7 @@
   "name": "Sudoku",
   "short_name": "Sudoku",
   "description": "略",
-  "start_url": "./sudoku.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f0f4fa",
   "theme_color": "#1e3d66",
