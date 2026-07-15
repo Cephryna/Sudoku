@@ -40,20 +40,43 @@
             font-weight: 500;
             letter-spacing: 2px;
             color: #1a2b4a;
-            margin: 0 0 0.5rem 0;
+            margin: 0 0 0.2rem 0;
             font-size: 1.9rem;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
+            flex-wrap: wrap;
         }
         h1 small {
-            font-size: 0.9rem;
-            font-weight: 300;
+            font-size: 0.8rem;
+            font-weight: 400;
             color: #3e5a7a;
             background: rgba(60, 90, 130, 0.08);
             padding: 0.1rem 1rem;
             border-radius: 40px;
+        }
+        .stats-bar {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 0 0 10px 0;
+            font-size: 0.9rem;
+            color: #1a2b4a;
+            background: rgba(255,255,255,0.3);
+            padding: 6px 18px;
+            border-radius: 60px;
+            backdrop-filter: blur(2px);
+        }
+        .stats-bar span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .stats-bar .count {
+            font-weight: 700;
+            color: #1e3d66;
+            font-size: 1rem;
         }
         .board-wrapper {
             background: #1e2f47;
@@ -61,7 +84,7 @@
             border-radius: 32px;
             box-shadow: inset 0 4px 8px rgba(0,0,0,0.3), 0 12px 24px rgba(0,0,0,0.2);
             display: inline-block;
-            margin: 10px auto 12px auto;
+            margin: 6px auto 10px auto;
             width: fit-content;
         }
         table.sudoku {
@@ -86,7 +109,6 @@
             position: relative;
             border-radius: 4px;
         }
-        /* thick borders for 3x3 boxes */
         table.sudoku td:nth-child(3n) {
             border-right: 3px solid #1e2f47;
         }
@@ -99,16 +121,19 @@
         table.sudoku tr:nth-child(3n+1) td {
             border-top: 3px solid #1e2f47;
         }
-        /* given (pre-filled) numbers */
         table.sudoku td.given {
             color: #1d3b5c;
             font-weight: 600;
             background: #ecf0f5;
         }
-        /* user-entered numbers */
         table.sudoku td.user {
             color: #0066b3;
             font-weight: 500;
+        }
+        table.sudoku td.solution {
+            color: #008844;
+            font-weight: 600;
+            background: #e6f5ed;
         }
         table.sudoku td.selected {
             background: #c3d9f0 !important;
@@ -122,7 +147,11 @@
             background: #ffe1e1 !important;
             color: #b00020;
         }
-        /* ---------- candidate marks (small numbers top-right) ---------- */
+        table.sudoku td.custom-given {
+            color: #8a4b1a;
+            font-weight: 700;
+            background: #f5ede6;
+        }
         .candidate-mark {
             position: absolute;
             top: 2px;
@@ -148,28 +177,27 @@
             font-weight: 600;
             opacity: 1;
         }
-        /* control panel */
         .control-panel {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            gap: 14px 22px;
-            margin: 24px 0 8px 0;
+            gap: 10px 16px;
+            margin: 16px 0 6px 0;
             width: 100%;
         }
         .btn-group {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
             justify-content: center;
         }
         .btn {
             background: white;
             border: none;
-            padding: 10px 22px;
+            padding: 8px 18px;
             border-radius: 60px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 500;
             color: #1f3a5e;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03), 0 2px 6px rgba(0, 20, 30, 0.1);
@@ -201,12 +229,49 @@
             background: transparent;
             border: 1px solid #56759b;
         }
+        .btn.solution-btn {
+            background: #1e6b4a;
+            color: white;
+            border-color: #1e6b4a;
+        }
+        .btn.solution-btn:hover {
+            background: #155837;
+        }
+        .btn.history-btn {
+            background: #6b4a7a;
+            color: white;
+            border-color: #6b4a7a;
+        }
+        .btn.history-btn:hover {
+            background: #553a63;
+        }
+        .btn.custom-btn {
+            background: #b4823a;
+            color: white;
+            border-color: #b4823a;
+        }
+        .btn.custom-btn:hover {
+            background: #9a6e30;
+        }
+        .btn.custom-btn.active {
+            background: #d4a050;
+            border-color: #d4a050;
+            box-shadow: 0 0 0 2px #f5d080;
+        }
+        .btn.danger {
+            background: #b34a4a;
+            color: white;
+            border-color: #b34a4a;
+        }
+        .btn.danger:hover {
+            background: #933a3a;
+        }
         .status {
-            min-width: 120px;
-            padding: 6px 12px;
+            min-width: 100px;
+            padding: 4px 12px;
             background: rgba(0,0,0,0.02);
             border-radius: 60px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: #1d334b;
             text-align: center;
             font-weight: 450;
@@ -216,17 +281,17 @@
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            gap: 8px;
-            margin: 8px 0 2px 0;
+            gap: 6px;
+            margin: 6px 0 2px 0;
             width: 100%;
         }
         .num-btn {
-            width: 44px;
-            height: 44px;
+            width: 42px;
+            height: 42px;
             border-radius: 30px;
             border: 1px solid #b2c8e0;
             background: rgba(255, 255, 255, 0.7);
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 500;
             color: #10273f;
             cursor: pointer;
@@ -247,40 +312,189 @@
             background: #f2e3e3;
             border-color: #b98a8a;
             color: #6f3b3b;
-            width: 60px;
+            width: 56px;
         }
         .num-btn.mark-btn {
             background: #e0eaf5;
             border-color: #6f8fb0;
             color: #1d3d66;
-            width: 92px;          /* significantly longer */
-            font-size: 0.9rem;
+            width: 82px;
+            font-size: 0.85rem;
             flex-shrink: 0;
         }
         .footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 12px;
-            font-size: 0.85rem;
+            margin-top: 10px;
+            font-size: 0.8rem;
             color: #2e4a6a;
             opacity: 0.8;
             flex-wrap: wrap;
             width: 100%;
-            gap: 8px;
+            gap: 6px;
         }
         .footer span {
             background: rgba(0,0,0,0.02);
             padding: 4px 12px;
             border-radius: 60px;
         }
+        .footer .key-hint {
+            font-weight: 500;
+            color: #1a3a5a;
+        }
+
+        /* History modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: white;
+            border-radius: 32px;
+            padding: 28px 32px;
+            max-width: 700px;
+            width: 95%;
+            max-height: 80vh;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            overflow-y: auto;
+        }
+        .modal h2 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            color: #1a2b4a;
+        }
+        .modal h2 button {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #888;
+            padding: 0 8px;
+        }
+        .modal h2 button:hover {
+            color: #333;
+        }
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: #f5f8fc;
+            border-radius: 16px;
+            border-left: 4px solid #1e3d66;
+            transition: 0.1s;
+        }
+        .history-item:hover {
+            background: #e8eff5;
+            transform: scale(1.01);
+        }
+        .history-item .info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex: 1;
+            cursor: pointer;
+        }
+        .history-item .info .date {
+            font-size: 0.8rem;
+            color: #5a6f8a;
+        }
+        .history-item .info .status {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .history-item .info .status.solved {
+            color: #1e6b4a;
+        }
+        .history-item .info .status.unsolved {
+            color: #b34a4a;
+        }
+        .history-item .badge {
+            font-size: 0.8rem;
+            background: #1e3d66;
+            color: white;
+            padding: 2px 12px;
+            border-radius: 30px;
+            margin: 0 6px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .history-item .badge:hover {
+            background: #2a4d7a;
+        }
+        .history-item .badge.custom {
+            background: #b4823a;
+        }
+        .history-item .badge.custom:hover {
+            background: #9a6e30;
+        }
+        .history-item .delete-btn {
+            background: #d45a5a;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 2px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.1s;
+            flex-shrink: 0;
+            font-weight: 500;
+        }
+        .history-item .delete-btn:hover {
+            background: #b34a4a;
+            transform: scale(0.95);
+        }
+        .empty-history {
+            text-align: center;
+            color: #6a7f9a;
+            padding: 30px 0;
+        }
+        .modal .btn-sm {
+            padding: 4px 14px;
+            font-size: 0.8rem;
+            border-radius: 30px;
+            border: none;
+            background: #e0eaf5;
+            cursor: pointer;
+            color: #1f3a5e;
+        }
+        .modal .btn-sm:hover {
+            background: #c3d4e8;
+        }
+        .modal .btn-sm.danger-sm {
+            background: #f2d0d0;
+            color: #8a3a3a;
+        }
+        .modal .btn-sm.danger-sm:hover {
+            background: #e8b8b8;
+        }
         @media (max-width: 550px) {
             .container { padding: 1rem; }
             table.sudoku td { width: 40px; height: 40px; font-size: 1.1rem; }
-            .num-btn { width: 38px; height: 38px; font-size: 1rem; }
+            .num-btn { width: 36px; height: 36px; font-size: 1rem; }
             .candidate-mark { font-size: 0.5rem; top: 1px; right: 2px; max-width: 26px; }
-            .num-btn.clear-btn { width: 50px; font-size: 0.8rem; }
-            .num-btn.mark-btn { width: 72px; font-size: 0.8rem; }
+            .num-btn.clear-btn { width: 46px; font-size: 0.8rem; }
+            .num-btn.mark-btn { width: 66px; font-size: 0.75rem; }
+            .modal { padding: 20px; }
+            .history-item .badge { font-size: 0.7rem; padding: 2px 8px; }
+            .history-item .delete-btn { font-size: 0.7rem; padding: 2px 8px; }
         }
         @media (max-width: 420px) {
             table.sudoku td { width: 34px; height: 34px; font-size: 0.9rem; }
@@ -288,8 +502,8 @@
             .candidate-mark { font-size: 0.4rem; top: 1px; right: 1px; max-width: 20px; }
             .container { padding: 0.8rem; }
             .board-wrapper { padding: 10px; }
-            .num-btn.clear-btn { width: 44px; font-size: 0.7rem; }
-            .num-btn.mark-btn { width: 62px; font-size: 0.7rem; }
+            .num-btn.clear-btn { width: 42px; font-size: 0.7rem; }
+            .num-btn.mark-btn { width: 58px; font-size: 0.7rem; }
         }
     </style>
 </head>
@@ -298,11 +512,14 @@
     <h1>
         🧩 Sudoku
     </h1>
+    <div class="stats-bar">
+        <span>🏆 Wins: <span class="count" id="winCount">0</span></span>
+        <span>📋 Games: <span class="count" id="gameCount">0</span></span>
+    </div>
     <div class="board-wrapper">
         <table class="sudoku" id="sudokuGrid"></table>
     </div>
 
-    <!-- Number pad -->
     <div class="number-pad">
         <button class="num-btn" data-num="1">1</button>
         <button class="num-btn" data-num="2">2</button>
@@ -319,17 +536,38 @@
 
     <div class="control-panel">
         <div class="btn-group">
-            <button class="btn primary" id="newGameBtn">✨ New Game</button>
+            <button class="btn primary" id="newGameBtn">✨ New</button>
+            <button class="btn custom-btn" id="customModeBtn">✏️ Design</button>
             <button class="btn outline" id="checkBtn">🔍 Check</button>
             <button class="btn outline" id="clearAllBtn">🧹 Clear</button>
+            <button class="btn solution-btn" id="solutionBtn">💡 Solution</button>
+            <button class="btn history-btn" id="historyBtn">📜 History</button>
         </div>
         <div class="status" id="statusMsg">Ready</div>
     </div>
     <div class="footer">
-        <span>Click a cell · keyboard or number pad</span>
-        <span>✎ Mark mode: click numbers to toggle candidates</span>
+        <span>Click cell · keyboard or pad · <span class="key-hint">[S]</span> solution · <span class="key-hint">[H]</span> history</span>
+        <span>✎ Mark: toggle candidates · ✏️ Design: create custom puzzle</span>
     </div>
 </div>
+
+<!-- History Modal -->
+<div class="modal-overlay" id="historyModal">
+    <div class="modal">
+        <h2>
+            📜 Game History
+            <button id="closeHistoryBtn">&times;</button>
+        </h2>
+        <div style="display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
+            <button class="btn-sm danger-sm" id="clearHistoryBtn">🗑️ Clear All</button>
+            <span style="font-size:0.85rem; color:#5a6f8a; align-self:center;">Click game to load · Click ✕ to delete</span>
+        </div>
+        <div class="history-list" id="historyList">
+            <!-- dynamically populated -->
+        </div>
+    </div>
+</div>
+
 <script>
     (function(){
         "use strict";
@@ -338,17 +576,231 @@
         const GRID_SIZE = 9;
         let board = [];
         let givenMask = [];
+        let solutionBoard = null;
         let selectedRow = -1, selectedCol = -1;
-
-        // ---- Candidate marks ----
         let candidates = Array.from({ length: 9 }, () => Array.from({ length: 9 }, () => new Set()));
-
-        // ---- Mark mode ----
         let markMode = false;
+        let showingSolution = false;
+        let currentPuzzleId = null;
 
+        // ----- Custom puzzle mode -----
+        let customMode = false;
+
+        // ----- History & Stats -----
+        let winCount = 0;
+        let history = [];
+
+        const STORAGE_KEY = 'sudoku_history_data';
+        const WIN_KEY = 'sudoku_win_count';
+
+        // ----- DOM -----
         const gridEl = document.getElementById('sudokuGrid');
         const statusEl = document.getElementById('statusMsg');
         const toggleMarkBtn = document.getElementById('toggleMarkBtn');
+        const solutionBtn = document.getElementById('solutionBtn');
+        const historyBtn = document.getElementById('historyBtn');
+        const historyModal = document.getElementById('historyModal');
+        const historyList = document.getElementById('historyList');
+        const closeHistoryBtn = document.getElementById('closeHistoryBtn');
+        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+        const winCountEl = document.getElementById('winCount');
+        const gameCountEl = document.getElementById('gameCount');
+        const customModeBtn = document.getElementById('customModeBtn');
+
+        // ----- Storage functions -----
+        function loadStats() {
+            try {
+                const w = localStorage.getItem(WIN_KEY);
+                winCount = w ? parseInt(w, 10) : 0;
+                const h = localStorage.getItem(STORAGE_KEY);
+                history = h ? JSON.parse(h) : [];
+            } catch(e) {
+                winCount = 0;
+                history = [];
+            }
+            updateStatsDisplay();
+        }
+
+        function saveStats() {
+            try {
+                localStorage.setItem(WIN_KEY, String(winCount));
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+            } catch(e) {
+                console.warn('Failed to save to localStorage:', e);
+            }
+            updateStatsDisplay();
+        }
+
+        function updateStatsDisplay() {
+            winCountEl.textContent = winCount;
+            gameCountEl.textContent = history.length;
+        }
+
+        // ----- Get puzzle fingerprint for deduplication -----
+        function getPuzzleFingerprint() {
+            const puzzleData = board.map((row, r) => 
+                row.map((v, c) => givenMask[r]?.[c] ? v : 0)
+            );
+            return JSON.stringify(puzzleData);
+        }
+
+        // ----- Validate if board is a complete valid Sudoku solution -----
+        function isValidSudokuSolution() {
+            const isFull = board.every(row => row.every(v => v !== 0));
+            if (!isFull) return false;
+
+            for (let r = 0; r < 9; r++) {
+                const seen = new Set();
+                for (let c = 0; c < 9; c++) {
+                    const val = board[r][c];
+                    if (val < 1 || val > 9 || seen.has(val)) return false;
+                    seen.add(val);
+                }
+            }
+
+            for (let c = 0; c < 9; c++) {
+                const seen = new Set();
+                for (let r = 0; r < 9; r++) {
+                    const val = board[r][c];
+                    if (val < 1 || val > 9 || seen.has(val)) return false;
+                    seen.add(val);
+                }
+            }
+
+            for (let box = 0; box < 9; box++) {
+                const seen = new Set();
+                const startRow = Math.floor(box / 3) * 3;
+                const startCol = (box % 3) * 3;
+                for (let r = startRow; r < startRow + 3; r++) {
+                    for (let c = startCol; c < startCol + 3; c++) {
+                        const val = board[r][c];
+                        if (val < 1 || val > 9 || seen.has(val)) return false;
+                        seen.add(val);
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        // ----- Check and register win if solved -----
+        function checkAndRegisterWin() {
+            if (!isValidSudokuSolution()) return false;
+            
+            const fingerprint = getPuzzleFingerprint();
+            const existing = history.find(h => {
+                const hPuzzle = h.puzzle || [];
+                return JSON.stringify(hPuzzle) === fingerprint;
+            });
+            
+            // Only increment win count if the puzzle has never been solved before
+            if (!existing || !existing.solved) {
+                winCount++;
+                // Mark as solved in history
+                if (existing) {
+                    existing.solved = true;
+                    existing.userBoard = board.map(row => [...row]);
+                    existing.date = new Date().toISOString();
+                    if (solutionBoard) {
+                        existing.solution = solutionBoard.map(row => [...row]);
+                    }
+                    saveStats();
+                } else {
+                    saveToHistory(true);
+                }
+                statusEl.textContent = '🎉 Congratulations! You solved it! +1 win!';
+                return true;
+            } else {
+                // Already solved before - don't increment, but update the user board
+                existing.userBoard = board.map(row => [...row]);
+                existing.date = new Date().toISOString();
+                saveStats();
+                statusEl.textContent = '🎉 You solved it again! (already counted)';
+                return true;
+            }
+        }
+
+        // ----- Save current game to history -----
+        function saveToHistory(solved = false, isCustom = false) {
+            const fingerprint = getPuzzleFingerprint();
+            
+            let existing = history.find(h => {
+                const hPuzzle = h.puzzle || [];
+                return JSON.stringify(hPuzzle) === fingerprint;
+            });
+
+            if (existing) {
+                if (solved === true) {
+                    existing.solved = true;
+                }
+                existing.userBoard = board.map(row => [...row]);
+                existing.date = new Date().toISOString();
+                if (solutionBoard) {
+                    existing.solution = solutionBoard.map(row => [...row]);
+                }
+                if (isCustom) existing.isCustom = true;
+                if (solved) currentPuzzleId = existing.id;
+            } else {
+                const entry = {
+                    id: Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+                    date: new Date().toISOString(),
+                    puzzle: board.map((row, r) => row.map((v, c) => givenMask[r]?.[c] ? v : 0)),
+                    givenMask: givenMask.map(row => [...row]),
+                    userBoard: board.map(row => [...row]),
+                    solution: solutionBoard ? solutionBoard.map(row => [...row]) : null,
+                    solved: solved,
+                    isCustom: isCustom
+                };
+                history.push(entry);
+                if (solved) currentPuzzleId = entry.id;
+            }
+            saveStats();
+        }
+
+        // ----- Delete a single history entry -----
+        function deleteHistoryEntry(id) {
+            if (!confirm('Delete this game from history?')) return;
+            
+            const index = history.findIndex(h => h.id === id);
+            if (index === -1) return;
+            
+            const entry = history[index];
+            
+            // If this entry was solved, we need to recalculate win count
+            if (entry.solved) {
+                winCount--;
+            }
+            
+            history.splice(index, 1);
+            saveStats();
+            renderHistory();
+            statusEl.textContent = '🗑️ Game removed from history';
+        }
+
+        // ----- Load a game from history -----
+        function loadFromHistory(entry) {
+            board = entry.userBoard ? entry.userBoard.map(row => [...row]) : entry.puzzle.map(row => [...row]);
+            givenMask = entry.givenMask.map(row => [...row]);
+            solutionBoard = entry.solution ? entry.solution.map(row => [...row]) : null;
+            candidates = Array.from({ length: 9 }, () => Array.from({ length: 9 }, () => new Set()));
+            selectedRow = -1; selectedCol = -1;
+            showingSolution = false;
+            markMode = false;
+            customMode = false;
+            customModeBtn.classList.remove('active');
+            toggleMarkBtn.textContent = '✎ Mark';
+            currentPuzzleId = entry.id;
+            renderBoard();
+            statusEl.textContent = `📂 Loaded game from ${new Date(entry.date).toLocaleString()}`;
+            historyModal.classList.remove('active');
+            if (entry.solved) {
+                statusEl.textContent += ' 🏆 (solved!)';
+            }
+            if (entry.isCustom) {
+                statusEl.textContent += ' ✏️ (custom)';
+            }
+            checkAndMarkErrors();
+        }
 
         // ----- Helpers -----
         function createEmptyBoard() {
@@ -441,15 +893,64 @@
 
         // ----- Game state -----
         function initGame() {
+            customMode = false;
+            customModeBtn.classList.remove('active');
             const complete = generateCompleteSudoku();
             const clueCount = 30 + Math.floor(Math.random() * 8);
             const puzzle = createPuzzle(complete, clueCount);
             board = puzzle.map(row => [...row]);
             givenMask = board.map(row => row.map(v => v !== 0));
+            solutionBoard = complete.map(row => [...row]);
             candidates = Array.from({ length: 9 }, () => Array.from({ length: 9 }, () => new Set()));
             selectedRow = -1; selectedCol = -1;
+            showingSolution = false;
+            markMode = false;
+            currentPuzzleId = null;
+            toggleMarkBtn.textContent = '✎ Mark';
             renderBoard();
             statusEl.textContent = '🧩 New puzzle generated';
+            saveToHistory(false);
+        }
+
+        // ----- Custom puzzle functions -----
+        function startCustomMode() {
+            customMode = !customMode;
+            customModeBtn.classList.toggle('active');
+            
+            if (customMode) {
+                board = createEmptyBoard();
+                givenMask = board.map(row => row.map(() => false));
+                solutionBoard = null;
+                candidates = Array.from({ length: 9 }, () => Array.from({ length: 9 }, () => new Set()));
+                selectedRow = -1; selectedCol = -1;
+                showingSolution = false;
+                markMode = false;
+                toggleMarkBtn.textContent = '✎ Mark';
+                renderBoard();
+                statusEl.textContent = '✏️ Design mode: Click cells to set given numbers. Use number pad to enter values.';
+            } else {
+                const hasNumbers = board.some(row => row.some(v => v !== 0));
+                if (hasNumbers) {
+                    const testBoard = board.map(row => [...row]);
+                    const solved = solveSudoku(testBoard);
+                    if (solved) {
+                        solutionBoard = solved.map(row => [...row]);
+                        saveToHistory(false, true);
+                        statusEl.textContent = '✅ Custom puzzle saved! You can now play it.';
+                    } else {
+                        statusEl.textContent = '⚠️ This puzzle has no solution! Please fix it.';
+                        customMode = true;
+                        customModeBtn.classList.add('active');
+                        return;
+                    }
+                } else {
+                    initGame();
+                    return;
+                }
+                renderBoard();
+                customMode = false;
+                customModeBtn.classList.remove('active');
+            }
         }
 
         // ----- Render -----
@@ -462,15 +963,28 @@
                     td.dataset.row = r;
                     td.dataset.col = c;
 
-                    const val = board[r][c];
+                    let val = board[r][c];
+                    let isSolution = false;
+
+                    if (showingSolution && solutionBoard) {
+                        if (!givenMask[r][c]) {
+                            val = solutionBoard[r][c];
+                            isSolution = true;
+                        }
+                    }
+
                     if (val !== 0) {
                         td.textContent = val;
                     } else {
                         td.textContent = '';
                     }
 
-                    if (givenMask[r][c]) {
+                    if (customMode && givenMask[r][c]) {
+                        td.classList.add('custom-given');
+                    } else if (givenMask[r][c]) {
                         td.classList.add('given');
+                    } else if (isSolution) {
+                        td.classList.add('solution');
                     } else if (val !== 0) {
                         td.classList.add('user');
                     }
@@ -490,11 +1004,10 @@
                         }
                     }
 
-                    // candidate marks
                     const candSet = candidates[r][c];
                     const markSpan = document.createElement('span');
                     markSpan.className = 'candidate-mark';
-                    if (candSet.size > 0 && val === 0) {
+                    if (!showingSolution && candSet.size > 0 && board[r][c] === 0) {
                         const sorted = Array.from(candSet).sort((a,b) => a-b);
                         markSpan.textContent = sorted.join(' ');
                     } else {
@@ -508,9 +1021,11 @@
                 gridEl.appendChild(tr);
             }
             toggleMarkBtn.textContent = markMode ? '✎ Mark (On)' : '✎ Mark';
+            solutionBtn.textContent = showingSolution ? '🙈 Hide' : '💡 Solution';
         }
 
         function checkAndMarkErrors() {
+            if (showingSolution) return false;
             const allCells = gridEl.querySelectorAll('td');
             allCells.forEach(td => td.classList.remove('error'));
 
@@ -529,11 +1044,15 @@
                 }
             }
             if (!hasError) {
-                const isFull = board.every(row => row.every(v => v !== 0));
-                if (isFull) {
-                    statusEl.textContent = '🎉 Congratulations! You solved it!';
+                if (isValidSudokuSolution()) {
+                    checkAndRegisterWin();
                 } else {
-                    statusEl.textContent = '✅ No conflicts so far, keep going!';
+                    const isFull = board.every(row => row.every(v => v !== 0));
+                    if (isFull) {
+                        statusEl.textContent = '⚠️ Board is full but has invalid numbers!';
+                    } else {
+                        statusEl.textContent = '✅ No conflicts so far, keep going!';
+                    }
                 }
             } else {
                 statusEl.textContent = '⚠️ Conflicts found (marked in red)';
@@ -543,6 +1062,26 @@
 
         // ----- Cell click -----
         function onCellClick(row, col) {
+            if (customMode) {
+                if (board[row][col] !== 0) {
+                    board[row][col] = 0;
+                    givenMask[row][col] = false;
+                    renderBoard();
+                    statusEl.textContent = `🗑️ Cleared cell (${row+1}, ${col+1})`;
+                    return;
+                }
+                givenMask[row][col] = true;
+                selectedRow = row;
+                selectedCol = col;
+                renderBoard();
+                statusEl.textContent = `✏️ Set given at (${row+1}, ${col+1}) - now enter a number`;
+                return;
+            }
+
+            if (showingSolution) {
+                statusEl.textContent = '💡 Click "Hide" to continue playing';
+                return;
+            }
             if (givenMask[row][col]) {
                 selectedRow = row;
                 selectedCol = col;
@@ -558,6 +1097,30 @@
 
         // ----- Input number -----
         function inputNumber(num) {
+            if (customMode) {
+                if (selectedRow === -1 || selectedCol === -1) {
+                    statusEl.textContent = '⚠️ Please click a cell first to set a given number';
+                    return;
+                }
+                const r = selectedRow, c = selectedCol;
+                if (num === 0) {
+                    board[r][c] = 0;
+                    givenMask[r][c] = false;
+                    renderBoard();
+                    statusEl.textContent = `🗑️ Cleared custom cell (${r+1}, ${c+1})`;
+                    return;
+                }
+                board[r][c] = num;
+                givenMask[r][c] = true;
+                renderBoard();
+                statusEl.textContent = `✏️ Set ${num} at (${r+1}, ${c+1})`;
+                return;
+            }
+
+            if (showingSolution) {
+                statusEl.textContent = '💡 Hide the solution first to play';
+                return;
+            }
             if (selectedRow === -1 || selectedCol === -1) {
                 statusEl.textContent = '⚠️ Please click a cell first';
                 return;
@@ -568,7 +1131,6 @@
                 return;
             }
 
-            // Mark mode
             if (markMode) {
                 if (board[r][c] !== 0) {
                     statusEl.textContent = '⚠️ Cell has a number, clear it first to mark candidates';
@@ -592,12 +1154,12 @@
                 return;
             }
 
-            // Normal input
             if (num === 0) {
                 board[r][c] = 0;
                 candidates[r][c].clear();
                 renderBoard();
                 statusEl.textContent = `🗑️ Cleared (${r+1}, ${c+1})`;
+                saveToHistory(false);
                 return;
             }
 
@@ -609,6 +1171,7 @@
                 const td = gridEl.querySelector(`td[data-row="${r}"][data-col="${c}"]`);
                 if (td) td.classList.add('error');
                 statusEl.textContent = `❌ Conflict with number ${num}`;
+                saveToHistory(false);
                 return;
             }
             board[r][c] = num;
@@ -616,10 +1179,31 @@
             renderBoard();
             statusEl.textContent = `✅ Entered ${num}`;
             checkAndMarkErrors();
+            const isFull = board.every(row => row.every(v => v !== 0));
+            if (!isFull || !isValidSudokuSolution()) {
+                saveToHistory(false);
+            }
         }
 
-        // ----- Clear all user cells -----
+        // ----- Clear all -----
         function clearAllUserCells() {
+            if (customMode) {
+                for (let r = 0; r < 9; r++) {
+                    for (let c = 0; c < 9; c++) {
+                        board[r][c] = 0;
+                        givenMask[r][c] = false;
+                        candidates[r][c].clear();
+                    }
+                }
+                selectedRow = -1; selectedCol = -1;
+                renderBoard();
+                statusEl.textContent = '🧹 Cleared all custom cells';
+                return;
+            }
+            if (showingSolution) {
+                statusEl.textContent = '💡 Hide the solution first';
+                return;
+            }
             for (let r = 0; r < 9; r++) {
                 for (let c = 0; c < 9; c++) {
                     if (!givenMask[r][c]) {
@@ -631,10 +1215,15 @@
             selectedRow = -1; selectedCol = -1;
             renderBoard();
             statusEl.textContent = '🧹 Cleared all user numbers and candidates';
+            saveToHistory(false);
         }
 
         // ----- New game -----
         function newGame() {
+            if (customMode) {
+                customMode = false;
+                customModeBtn.classList.remove('active');
+            }
             initGame();
             const allCells = gridEl.querySelectorAll('td');
             allCells.forEach(td => td.classList.remove('error'));
@@ -642,21 +1231,134 @@
             renderBoard();
             statusEl.textContent = '✨ New game started';
             markMode = false;
+            showingSolution = false;
             toggleMarkBtn.textContent = '✎ Mark';
         }
 
         function checkGame() {
+            if (customMode) {
+                statusEl.textContent = '✏️ Exit design mode first to check';
+                return;
+            }
+            if (showingSolution) {
+                statusEl.textContent = '💡 Hide the solution first to check';
+                return;
+            }
             checkAndMarkErrors();
         }
 
         function toggleMarkMode() {
+            if (customMode) {
+                statusEl.textContent = '✏️ Mark mode not available in design mode';
+                return;
+            }
+            if (showingSolution) {
+                statusEl.textContent = '💡 Hide the solution first';
+                return;
+            }
             markMode = !markMode;
             toggleMarkBtn.textContent = markMode ? '✎ Mark (On)' : '✎ Mark';
             statusEl.textContent = markMode ? '✎ Mark mode: click numbers to toggle candidates' : '🔢 Input mode';
             renderBoard();
         }
 
-        // ----- Keyboard events -----
+        function toggleSolution() {
+            if (customMode) {
+                statusEl.textContent = '✏️ Exit design mode first';
+                return;
+            }
+            if (!solutionBoard) {
+                statusEl.textContent = '⚠️ No solution available';
+                return;
+            }
+            showingSolution = !showingSolution;
+            if (showingSolution) {
+                statusEl.textContent = '💡 Showing solution (green numbers)';
+                const allCells = gridEl.querySelectorAll('td');
+                allCells.forEach(td => td.classList.remove('error'));
+            } else {
+                statusEl.textContent = '🔢 Back to playing mode';
+                checkAndMarkErrors();
+            }
+            renderBoard();
+        }
+
+        // ----- History modal -----
+        function renderHistory() {
+            if (history.length === 0) {
+                historyList.innerHTML = '<div class="empty-history">No games played yet. Start a new game!</div>';
+                return;
+            }
+            const sorted = [...history].reverse();
+            historyList.innerHTML = sorted.map((entry, idx) => {
+                const date = new Date(entry.date);
+                const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+                const statusText = entry.solved ? '✅ Solved' : '⏳ In progress';
+                const statusClass = entry.solved ? 'solved' : 'unsolved';
+                const customBadge = entry.isCustom ? ' ✏️' : '';
+                return `
+                    <div class="history-item" data-id="${entry.id}">
+                        <div class="info">
+                            <div class="date">${dateStr}</div>
+                            <div class="status ${statusClass}">${statusText}${customBadge}</div>
+                        </div>
+                        <span class="badge ${entry.isCustom ? 'custom' : ''}">Load</span>
+                        <button class="delete-btn" data-id="${entry.id}">✕</button>
+                    </div>
+                `;
+            }).join('');
+
+            // Load button click
+            historyList.querySelectorAll('.badge').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const item = el.closest('.history-item');
+                    const id = item.dataset.id;
+                    const entry = history.find(h => h.id === id);
+                    if (entry) loadFromHistory(entry);
+                });
+            });
+
+            // Delete button click
+            historyList.querySelectorAll('.delete-btn').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = el.dataset.id;
+                    deleteHistoryEntry(id);
+                });
+            });
+
+            // Click on info area also loads
+            historyList.querySelectorAll('.info').forEach(el => {
+                el.addEventListener('click', () => {
+                    const item = el.closest('.history-item');
+                    const id = item.dataset.id;
+                    const entry = history.find(h => h.id === id);
+                    if (entry) loadFromHistory(entry);
+                });
+            });
+        }
+
+        function openHistory() {
+            renderHistory();
+            historyModal.classList.add('active');
+        }
+
+        function closeHistory() {
+            historyModal.classList.remove('active');
+        }
+
+        function clearHistory() {
+            if (confirm('Delete all game history? This cannot be undone.')) {
+                history = [];
+                winCount = 0;
+                saveStats();
+                renderHistory();
+                statusEl.textContent = '🗑️ History cleared';
+            }
+        }
+
+        // ----- Keyboard -----
         function onKeyDown(e) {
             const key = e.key;
             if (key >= '1' && key <= '9') {
@@ -680,17 +1382,36 @@
             } else if (key === 'm' || key === 'M') {
                 e.preventDefault();
                 toggleMarkMode();
+            } else if (key === 's' || key === 'S') {
+                e.preventDefault();
+                toggleSolution();
+            } else if (key === 'h' || key === 'H') {
+                e.preventDefault();
+                if (historyModal.classList.contains('active')) {
+                    closeHistory();
+                } else {
+                    openHistory();
+                }
             }
         }
 
-        // ----- Initialization -----
+        // ----- Init -----
         function init() {
+            loadStats();
             initGame();
             document.addEventListener('keydown', onKeyDown);
             document.getElementById('newGameBtn').addEventListener('click', newGame);
             document.getElementById('checkBtn').addEventListener('click', checkGame);
             document.getElementById('clearAllBtn').addEventListener('click', clearAllUserCells);
             toggleMarkBtn.addEventListener('click', toggleMarkMode);
+            solutionBtn.addEventListener('click', toggleSolution);
+            historyBtn.addEventListener('click', openHistory);
+            closeHistoryBtn.addEventListener('click', closeHistory);
+            clearHistoryBtn.addEventListener('click', clearHistory);
+            customModeBtn.addEventListener('click', startCustomMode);
+            historyModal.addEventListener('click', (e) => {
+                if (e.target === historyModal) closeHistory();
+            });
 
             document.querySelectorAll('.num-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
