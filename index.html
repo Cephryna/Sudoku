@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sudoku</title>
+    <title>Sudoku - Jelly Style</title>
     <style>
+        /* ========== 核心复位与字体 ========== */
         * {
             box-sizing: border-box;
             font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -12,61 +13,71 @@
             padding: 0;
         }
         body {
-            background: linear-gradient(145deg, #f0f4fa 0%, #d9e2ef 100%);
+            /* 奶黄偏粉的温暖背景 */
+            background: linear-gradient(145deg, #fdf6ed 0%, #f7ebdd 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             margin: 0;
-            padding: 16px;
+            padding: 20px;
         }
+
+        /* ========== 主容器 (3D立体果冻托盘) ========== */
         .container {
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(6px);
-            padding: 2rem 2rem 1.8rem;
-            border-radius: 48px;
-            box-shadow: 0 25px 40px -12px rgba(0, 20, 40, 0.35);
+            background: rgba(255, 248, 240, 0.55);
+            backdrop-filter: blur(8px);
+            padding: 2.2rem 2.2rem 1.8rem;
+            border-radius: 60px;
+            box-shadow: 
+                0 30px 50px -20px rgba(140, 110, 90, 0.25),
+                inset 0 -8px 20px rgba(140, 110, 90, 0.1),
+                inset 0 10px 25px rgba(255, 255, 255, 0.8);
             transition: 0.2s;
             width: fit-content;
             max-width: 98vw;
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.6);
             display: flex;
             flex-direction: column;
             align-items: center;
             margin: 0 auto;
         }
+
         h1 {
             text-align: center;
-            font-weight: 500;
+            font-weight: 600;
             letter-spacing: 2px;
-            color: #1a2b4a;
-            margin: 0 0 0.2rem 0;
-            font-size: 1.9rem;
+            color: #5a4a3e;
+            margin: 0 0 0.5rem 0;
+            font-size: 2rem;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
             flex-wrap: wrap;
+            text-shadow: 0 2px 4px rgba(255,255,255,0.8);
         }
         h1 small {
             font-size: 0.8rem;
             font-weight: 400;
-            color: #3e5a7a;
-            background: rgba(60, 90, 130, 0.08);
+            color: #8b7a6c;
+            background: rgba(255, 255, 255, 0.5);
             padding: 0.1rem 1rem;
             border-radius: 40px;
         }
+
         .stats-bar {
             display: flex;
             gap: 20px;
             justify-content: center;
-            margin: 0 0 10px 0;
+            margin: 0 0 12px 0;
             font-size: 0.9rem;
-            color: #1a2b4a;
-            background: rgba(255,255,255,0.3);
+            color: #5a4a3e;
+            background: rgba(255, 255, 255, 0.4);
             padding: 6px 18px;
             border-radius: 60px;
             backdrop-filter: blur(2px);
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.02);
         }
         .stats-bar span {
             display: flex;
@@ -75,115 +86,216 @@
         }
         .stats-bar .count {
             font-weight: 700;
-            color: #1e3d66;
+            color: #6d5a4b;
             font-size: 1rem;
         }
+
+        /* ========== 核心数独外框 ========== */
         .board-wrapper {
-            background: #1e2f47;
-            padding: 16px;
-            border-radius: 32px;
-            box-shadow: inset 0 4px 8px rgba(0,0,0,0.3), 0 12px 24px rgba(0,0,0,0.2);
+            /* 使用轻微的凹陷阴影模拟透明底槽 */
+            background: rgba(255, 235, 215, 0.3);
+            padding: 24px;
+            border-radius: 40px;
+            box-shadow: 
+                inset 0 -6px 10px rgba(120, 100, 80, 0.08),
+                inset 0 6px 15px rgba(255, 255, 255, 0.9),
+                0 20px 30px -8px rgba(150, 120, 100, 0.25);
             display: inline-block;
             margin: 6px auto 10px auto;
             width: fit-content;
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
+
+        /* ========== 数独表格 (透明隔断风格) ========== */
         table.sudoku {
-            border-collapse: collapse;
-            background: #fcf9f2;
-            border: 3px solid #1e2f47;
-            border-radius: 20px;
+            border-collapse: separate;
+            /* 表格背景作为格子的“凹槽”，呼应原图透明分割线 */
+            background: rgba(236, 222, 210, 0.25); 
+            border-radius: 28px;
             overflow: hidden;
             margin: 0 auto;
+            border-spacing: 8px; /* 增加了间距，营造出分界线凹槽 */
+            padding: 8px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3);
         }
+        
         table.sudoku td {
-            width: 52px;
-            height: 52px;
+            width: 58px;
+            height: 58px;
             text-align: center;
             vertical-align: middle;
-            border: 1px solid #a7b9ce;
-            font-size: 1.4rem;
-            font-weight: 500;
-            color: #0a1c2e;
-            background: #fcf9f2;
-            transition: 0.05s ease;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #4d3e33;
+            
+            border-radius: 16px;
+            /* 果冻白色的圆润底座 */
+            background: #ffffff;
+            
+            /* 3D 高光与底部阴影，让方块凸起 */
+            box-shadow: 
+                inset 0 -4px 6px rgba(180, 150, 130, 0.15),
+                0 4px 6px rgba(100, 80, 70, 0.1);
+            
+            transition: all 0.1s ease;
             position: relative;
-            border-radius: 4px;
+            /* 透明轮廓+高光边缘 */
+            border: 1px solid rgba(255, 255, 255, 0.9); 
         }
+
+        /* 
+           利用伪元素增加左上角的【高光点】，还原图片中果冻的高级质感。
+           【注】：当用户填入数字时，高光仍然保留，保证字体清晰的立体感。
+        */
+        table.sudoku td::before {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 8px;
+            width: 14px;
+            height: 10px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 100%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0.8;
+        }
+        table.sudoku td.given::before {
+            opacity: 0.5; /* 给定数字稍微暗一点，凸显区分度 */
+        }
+
+        /* 模拟图片中的 3x3 宫格加粗分隔（通过增大四周单元格的阴影） */
         table.sudoku td:nth-child(3n) {
-            border-right: 3px solid #1e2f47;
+            margin-right: 0px;
+            border-right: 3px solid rgba(240, 226, 214, 0.8);
+            box-shadow: inset -2px 0 4px rgba(140, 120, 100, 0.08), inset 0 -4px 6px rgba(180, 150, 130, 0.15), 0 4px 6px rgba(100, 80, 70, 0.1);
         }
         table.sudoku td:nth-child(3n+1) {
-            border-left: 3px solid #1e2f47;
+            margin-left: 0px;
+            border-left: 3px solid rgba(240, 226, 214, 0.8);
         }
         table.sudoku tr:nth-child(3n) td {
-            border-bottom: 3px solid #1e2f47;
+            margin-bottom: 0px;
+            border-bottom: 3px solid rgba(240, 226, 214, 0.8);
+            box-shadow: inset 0 -2px 4px rgba(140, 120, 100, 0.08), inset 0 -4px 6px rgba(180, 150, 130, 0.15), 0 4px 6px rgba(100, 80, 70, 0.1);
         }
         table.sudoku tr:nth-child(3n+1) td {
-            border-top: 3px solid #1e2f47;
+            margin-top: 0px;
+            border-top: 3px solid rgba(240, 226, 214, 0.8);
         }
+
+        /* ========== 单元格状态与颜色 ========== */
         table.sudoku td.given {
-            color: #1d3b5c;
-            font-weight: 600;
-            background: #ecf0f5;
+            color: #6d4c3a;
+            background: #f9f3ed;
         }
         table.sudoku td.user {
-            color: #0066b3;
-            font-weight: 500;
+            color: #b57a4c;
+            background: #ffffff;
         }
         table.sudoku td.solution {
-            color: #008844;
-            font-weight: 600;
-            background: #e6f5ed;
+            color: #66a588;
+            background: #f2fdf8;
         }
+        
+        /* 选中高亮：增加外圈果冻光晕 */
         table.sudoku td.selected {
-            background: #c3d9f0 !important;
-            box-shadow: inset 0 0 0 2px #2670b0;
-            border-radius: 4px;
+            background: #fff3eb !important;
+            /* 模拟软糖按下去的效果 */
+            transform: scale(0.95); 
+            box-shadow: 0 0 0 4px rgba(255, 210, 170, 0.4), inset 0 -4px 6px rgba(200, 160, 130, 0.2);
         }
+        
         table.sudoku td.highlight {
-            background: #dde9fa;
+            background: #fcf7f2;
         }
+        
         table.sudoku td.error {
-            background: #ffe1e1 !important;
-            color: #b00020;
+            background: #ffeaea !important;
+            color: #bc3a3a;
+            box-shadow: 0 0 0 3px rgba(255, 100, 100, 0.3);
         }
+        
         table.sudoku td.custom-given {
-            color: #8a4b1a;
+            color: #ae804c;
             font-weight: 700;
-            background: #f5ede6;
+            background: #f8f2ec;
         }
+
+        /* ========== 候选数标记 ========== */
         .candidate-mark {
             position: absolute;
-            top: 2px;
-            right: 4px;
+            /* 调整位置避开左上角高光 */
+            top: 4px;
+            right: 5px;
             font-size: 0.6rem;
-            font-weight: 500;
-            color: #3d5f85;
+            font-weight: 600;
+            color: #a5836a;
             line-height: 1.2;
             text-align: right;
             pointer-events: none;
             background: transparent;
             letter-spacing: 0.2px;
-            opacity: 0.85;
+            opacity: 0.9;
             max-width: 32px;
             white-space: pre-wrap;
             word-break: break-all;
+            z-index: 5;
         }
         table.sudoku td .candidate-mark.hidden-candidate {
             display: none;
         }
-        table.sudoku td.selected .candidate-mark {
-            color: #004080;
-            font-weight: 600;
-            opacity: 1;
+
+        /* ========== 数字键盘 ========== */
+        .number-pad {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 16px 0 4px 0;
+            width: 100%;
         }
+        .num-btn {
+            width: 46px;
+            height: 46px;
+            border-radius: 30px;
+            background: linear-gradient(145deg, #ffffff, #faf3ec);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #604b3e;
+            cursor: pointer;
+            transition: 0.15s;
+            box-shadow: 
+                inset 0 -4px 6px rgba(160, 130, 110, 0.15),
+                inset 0 4px 6px rgba(255, 255, 255, 1),
+                0 4px 8px rgba(140, 110, 90, 0.1);
+            flex-shrink: 0;
+        }
+        .num-btn:hover { transform: translateY(-2px); }
+        .num-btn:active { transform: scale(0.92) translateY(2px); }
+        
+        .num-btn.clear-btn {
+            background: linear-gradient(145deg, #fff5f0, #ffe8de);
+            color: #a3634a;
+            width: 60px;
+        }
+        .num-btn.mark-btn {
+            background: linear-gradient(145deg, #f5edf5, #ede2ed);
+            color: #7a5b7a;
+            width: 90px;
+            font-size: 0.85rem;
+        }
+
+        /* ========== 底部功能按钮 ========== */
         .control-panel {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            gap: 10px 16px;
-            margin: 16px 0 6px 0;
+            gap: 10px 14px;
+            margin: 16px 0 4px 0;
             width: 100%;
         }
         .btn-group {
@@ -193,218 +305,139 @@
             justify-content: center;
         }
         .btn {
-            background: white;
-            border: none;
-            padding: 8px 18px;
+            background: linear-gradient(145deg, #fcf8f5, #f5ede6);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            padding: 8px 20px;
             border-radius: 60px;
             font-size: 0.9rem;
             font-weight: 500;
-            color: #1f3a5e;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03), 0 2px 6px rgba(0, 20, 30, 0.1);
+            color: #504035;
+            box-shadow: inset 0 -3px 4px rgba(160, 130, 110, 0.12), inset 0 3px 6px rgba(255, 255, 255, 1), 0 4px 8px rgba(140, 110, 90, 0.08);
             display: inline-flex;
             align-items: center;
             gap: 6px;
             cursor: pointer;
             transition: all 0.15s;
-            border: 1px solid rgba(255,255,255,0.5);
             letter-spacing: 0.3px;
         }
-        .btn:hover {
-            background: #f0f6ff;
-            transform: scale(0.98);
-            box-shadow: 0 8px 14px rgba(0, 20, 40, 0.12);
-        }
-        .btn:active {
-            transform: scale(0.94);
-        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn:active { transform: scale(0.96); }
+        
         .btn.primary {
-            background: #1e3d66;
-            color: white;
-            border-color: #1e3d66;
-        }
-        .btn.primary:hover {
-            background: #163252;
-        }
-        .btn.outline {
-            background: transparent;
-            border: 1px solid #56759b;
+            background: linear-gradient(145deg, #e8ded6, #d4c5ba);
+            color: #4a3b32;
         }
         .btn.solution-btn {
-            background: #1e6b4a;
-            color: white;
-            border-color: #1e6b4a;
-        }
-        .btn.solution-btn:hover {
-            background: #155837;
+            background: linear-gradient(145deg, #ddeae2, #c5d5cb);
+            color: #346e55;
         }
         .btn.history-btn {
-            background: #6b4a7a;
-            color: white;
-            border-color: #6b4a7a;
-        }
-        .btn.history-btn:hover {
-            background: #553a63;
+            background: linear-gradient(145deg, #e6dfeb, #d5cdd9);
+            color: #5d4a6b;
         }
         .btn.custom-btn {
-            background: #b4823a;
-            color: white;
-            border-color: #b4823a;
-        }
-        .btn.custom-btn:hover {
-            background: #9a6e30;
+            background: linear-gradient(145deg, #eee3d5, #dfd0be);
+            color: #85684c;
         }
         .btn.custom-btn.active {
-            background: #d4a050;
-            border-color: #d4a050;
-            box-shadow: 0 0 0 2px #f5d080;
+            background: linear-gradient(145deg, #e3cdb5, #d4ba9e);
+            box-shadow: inset 0 -4px 6px rgba(0,0,0,0.2), inset 0 4px 10px rgba(255,255,255,0.6);
         }
         .btn.danger {
-            background: #b34a4a;
-            color: white;
-            border-color: #b34a4a;
+            background: linear-gradient(145deg, #f0dbdb, #e0c6c6);
+            color: #8f4949;
         }
-        .btn.danger:hover {
-            background: #933a3a;
-        }
+
         .status {
             min-width: 100px;
-            padding: 4px 12px;
-            background: rgba(0,0,0,0.02);
+            padding: 6px 16px;
+            background: rgba(255, 255, 255, 0.4);
             border-radius: 60px;
             font-size: 0.9rem;
-            color: #1d334b;
+            color: #5a4a3e;
             text-align: center;
             font-weight: 450;
-        }
-        .number-pad {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            gap: 6px;
-            margin: 6px 0 2px 0;
-            width: 100%;
-        }
-        .num-btn {
-            width: 42px;
-            height: 42px;
-            border-radius: 30px;
-            border: 1px solid #b2c8e0;
-            background: rgba(255, 255, 255, 0.7);
-            font-size: 1.2rem;
-            font-weight: 500;
-            color: #10273f;
-            cursor: pointer;
-            transition: 0.1s;
             backdrop-filter: blur(2px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            flex-shrink: 0;
         }
-        .num-btn:hover {
-            background: #dae6f5;
-            border-color: #3a6b9e;
-            transform: scale(0.95);
-        }
-        .num-btn:active {
-            background: #b7cee9;
-        }
-        .num-btn.clear-btn {
-            background: #f2e3e3;
-            border-color: #b98a8a;
-            color: #6f3b3b;
-            width: 56px;
-        }
-        .num-btn.mark-btn {
-            background: #e0eaf5;
-            border-color: #6f8fb0;
-            color: #1d3d66;
-            width: 82px;
-            font-size: 0.85rem;
-            flex-shrink: 0;
-        }
+        
         .footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 10px;
+            margin-top: 12px;
             font-size: 0.8rem;
-            color: #2e4a6a;
-            opacity: 0.8;
+            color: #8f7a6a;
             flex-wrap: wrap;
             width: 100%;
             gap: 6px;
-        }
-        .footer span {
-            background: rgba(0,0,0,0.02);
-            padding: 4px 12px;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 16px;
             border-radius: 60px;
         }
         .footer .key-hint {
             font-weight: 500;
-            color: #1a3a5a;
+            color: #6d5a4b;
         }
 
-        /* History modal */
+        /* ========== 历史记录弹窗 ========== */
         .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
+            background: rgba(120, 100, 90, 0.4);
+            backdrop-filter: blur(6px);
             z-index: 1000;
             justify-content: center;
             align-items: center;
         }
-        .modal-overlay.active {
-            display: flex;
-        }
+        .modal-overlay.active { display: flex; }
         .modal {
-            background: white;
-            border-radius: 32px;
+            background: rgba(255, 248, 242, 0.9);
+            backdrop-filter: blur(8px);
+            border-radius: 40px;
             padding: 28px 32px;
             max-width: 700px;
             width: 95%;
             max-height: 80vh;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 30px 60px rgba(120, 80, 60, 0.3), inset 0 2px 4px rgba(255,255,255,0.8);
             overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
         .modal h2 {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
-            color: #1a2b4a;
+            color: #4d3e33;
         }
         .modal h2 button {
-            background: none;
+            background: rgba(255,255,255,0.5);
             border: none;
-            font-size: 1.8rem;
+            border-radius: 50%;
+            width: 40px; height: 40px;
+            font-size: 1.6rem;
             cursor: pointer;
-            color: #888;
-            padding: 0 8px;
+            color: #6d5a4b;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: 0.15s;
         }
-        .modal h2 button:hover {
-            color: #333;
-        }
-        .history-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+        .modal h2 button:hover { background: #fff; transform: scale(0.95); }
+        .history-list { display: flex; flex-direction: column; gap: 8px; }
+        
         .history-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 14px;
-            background: #f5f8fc;
-            border-radius: 16px;
-            border-left: 4px solid #1e3d66;
-            transition: 0.1s;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(4px);
+            border-radius: 24px;
+            box-shadow: 0 4px 12px rgba(140, 110, 90, 0.08);
+            border: 1px solid rgba(255,255,255,0.9);
+            transition: 0.15s;
         }
-        .history-item:hover {
-            background: #e8eff5;
-            transform: scale(1.01);
-        }
+        .history-item:hover { background: rgba(255, 255, 255, 0.9); transform: scale(1.01); }
+        
         .history-item .info {
             display: flex;
             flex-direction: column;
@@ -412,42 +445,26 @@
             flex: 1;
             cursor: pointer;
         }
-        .history-item .info .date {
-            font-size: 0.8rem;
-            color: #5a6f8a;
-        }
-        .history-item .info .status {
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-        .history-item .info .status.solved {
-            color: #1e6b4a;
-        }
-        .history-item .info .status.unsolved {
-            color: #b34a4a;
-        }
+        .history-item .info .date { font-size: 0.8rem; color: #7a6a5e; }
+        .history-item .info .status { font-size: 0.85rem; font-weight: 500; }
+        .history-item .info .status.solved { color: #3d805e; }
+        .history-item .info .status.unsolved { color: #ac6c5a; }
+        
         .history-item .badge {
             font-size: 0.8rem;
-            background: #1e3d66;
-            color: white;
-            padding: 2px 12px;
+            background: #e8ddd4;
+            color: #4a3b32;
+            padding: 2px 14px;
             border-radius: 30px;
             margin: 0 6px;
             cursor: pointer;
             flex-shrink: 0;
+            box-shadow: inset 0 -2px 4px rgba(160, 130, 110, 0.2), inset 0 2px 4px rgba(255,255,255,0.8);
         }
-        .history-item .badge:hover {
-            background: #2a4d7a;
-        }
-        .history-item .badge.custom {
-            background: #b4823a;
-        }
-        .history-item .badge.custom:hover {
-            background: #9a6e30;
-        }
+        .history-item .badge.custom { background: #e0d0bf; }
         .history-item .delete-btn {
-            background: #d45a5a;
-            color: white;
+            background: #e8c8c8;
+            color: #7a4848;
             border: none;
             border-radius: 30px;
             padding: 2px 12px;
@@ -457,57 +474,38 @@
             flex-shrink: 0;
             font-weight: 500;
         }
-        .history-item .delete-btn:hover {
-            background: #b34a4a;
-            transform: scale(0.95);
-        }
+        .history-item .delete-btn:hover { background: #ddb5b5; transform: scale(0.95); }
         .empty-history {
             text-align: center;
-            color: #6a7f9a;
+            color: #8f7a6a;
             padding: 30px 0;
         }
-        .modal .btn-sm {
-            padding: 4px 14px;
-            font-size: 0.8rem;
-            border-radius: 30px;
-            border: none;
-            background: #e0eaf5;
-            cursor: pointer;
-            color: #1f3a5e;
-        }
-        .modal .btn-sm:hover {
-            background: #c3d4e8;
-        }
-        .modal .btn-sm.danger-sm {
-            background: #f2d0d0;
-            color: #8a3a3a;
-        }
-        .modal .btn-sm.danger-sm:hover {
-            background: #e8b8b8;
-        }
+
+        /* ========== 响应式适配 ========== */
         @media (max-width: 550px) {
-            .container { padding: 1rem; }
-            table.sudoku td { width: 40px; height: 40px; font-size: 1.1rem; }
-            .num-btn { width: 36px; height: 36px; font-size: 1rem; }
+            .container { padding: 1.2rem; border-radius: 40px;}
+            table.sudoku td { width: 42px; height: 42px; font-size: 1.2rem; border-radius: 12px;}
+            table.sudoku td::before { top: 1px; left: 4px; width: 10px; height: 8px;}
+            .num-btn { width: 38px; height: 38px; font-size: 1rem; }
             .candidate-mark { font-size: 0.5rem; top: 1px; right: 2px; max-width: 26px; }
-            .num-btn.clear-btn { width: 46px; font-size: 0.8rem; }
-            .num-btn.mark-btn { width: 66px; font-size: 0.75rem; }
+            .num-btn.clear-btn { width: 48px; font-size: 0.8rem; }
+            .num-btn.mark-btn { width: 70px; font-size: 0.75rem; }
             .modal { padding: 20px; }
-            .history-item .badge { font-size: 0.7rem; padding: 2px 8px; }
-            .history-item .delete-btn { font-size: 0.7rem; padding: 2px 8px; }
+            .btn { padding: 6px 14px; font-size: 0.8rem;}
         }
         @media (max-width: 420px) {
-            table.sudoku td { width: 34px; height: 34px; font-size: 0.9rem; }
+            table.sudoku td { width: 34px; height: 34px; font-size: 0.9rem; border-radius: 8px;}
+            table.sudoku td::before { top: 1px; left: 3px; width: 8px; height: 6px;}
             .num-btn { width: 32px; height: 32px; font-size: 0.9rem; }
             .candidate-mark { font-size: 0.4rem; top: 1px; right: 1px; max-width: 20px; }
-            .container { padding: 0.8rem; }
-            .board-wrapper { padding: 10px; }
+            .container { padding: 0.8rem; border-radius: 30px;}
+            .board-wrapper { padding: 10px; border-radius: 28px;}
             .num-btn.clear-btn { width: 42px; font-size: 0.7rem; }
             .num-btn.mark-btn { width: 58px; font-size: 0.7rem; }
         }
     </style>
     <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#1e3d66">
+    <meta name="theme-color" content="#f7ebdd">
 </head>
 <body>
 <div class="container">
@@ -540,8 +538,8 @@
         <div class="btn-group">
             <button class="btn primary" id="newGameBtn">✨ New</button>
             <button class="btn custom-btn" id="customModeBtn">✏️ Design</button>
-            <button class="btn outline" id="checkBtn">🔍 Check</button>
-            <button class="btn outline" id="clearAllBtn">🧹 Clear</button>
+            <button class="btn" id="checkBtn">🔍 Check</button>
+            <button class="btn" id="clearAllBtn">🧹 Clear</button>
             <button class="btn solution-btn" id="solutionBtn">💡 Solution</button>
             <button class="btn history-btn" id="historyBtn">📜 History</button>
         </div>
@@ -561,8 +559,8 @@
             <button id="closeHistoryBtn">&times;</button>
         </h2>
         <div style="display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
-            <button class="btn-sm danger-sm" id="clearHistoryBtn">🗑️ Clear All</button>
-            <span style="font-size:0.85rem; color:#5a6f8a; align-self:center;">Click game to load · Click ✕ to delete</span>
+            <button class="btn" style="background: #e8c8c8; color: #7a4848; padding: 4px 16px;" id="clearHistoryBtn">🗑️ Clear All</button>
+            <span style="font-size:0.85rem; color:#8f7a6a; align-self:center;">Click game to load · Click ✕ to delete</span>
         </div>
         <div class="history-list" id="historyList">
             <!-- dynamically populated -->
