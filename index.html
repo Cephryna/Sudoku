@@ -2,8 +2,8 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sudoku</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sudoku - Jelly Style</title>
     <style>
         /* ========== 核心复位与字体 ========== */
         * {
@@ -92,9 +92,8 @@
 
         /* ========== 核心数独外框 ========== */
         .board-wrapper {
-            /* 使用轻微的凹陷阴影模拟透明底槽 */
             background: rgba(255, 235, 215, 0.3);
-            padding: 24px;
+            padding: 1.5vw;
             border-radius: 40px;
             box-shadow: 
                 inset 0 -6px 10px rgba(120, 100, 80, 0.08),
@@ -104,56 +103,62 @@
             margin: 6px auto 10px auto;
             width: fit-content;
             border: 1px solid rgba(255, 255, 255, 0.8);
+            max-width: 100%;
         }
 
-        /* ========== 数独表格 (透明隔断风格) ========== */
+        /* ========== 数独表格 (修复竖屏窄缝) ========== */
         table.sudoku {
             border-collapse: separate;
-            /* 表格背景作为格子的“凹槽”，呼应原图透明分割线 */
             background: rgba(236, 222, 210, 0.25); 
             border-radius: 28px;
             overflow: hidden;
             margin: 0 auto;
-            border-spacing: 8px; /* 增加了间距，营造出分界线凹槽 */
-            padding: 8px;
+            /* 使用 vw 单位让间距在手机上等比缩小，腾出空间给格子 */
+            border-spacing: 0.8vw; 
+            padding: 0.8vw;
             box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3);
         }
         
         table.sudoku td {
-            width: 58px;
-            height: 58px;
+            /* 使用 vmin 保证在大屏/小屏下比例协调，防止挤扁 */
+            width: 7vmin;
+            height: 7vmin;
+            min-width: 34px;
+            min-height: 34px;
+            max-width: 60px;
+            max-height: 60px;
+            
             text-align: center;
             vertical-align: middle;
-            font-size: 1.6rem;
+            
+            /* ============================================== */
+            /* 核心修改：调小了手机上字体的最大尺寸限制 */
+            font-size: clamp(0.8rem, 2.2vmin, 1.6rem);
+            /* ============================================== */
+            
             font-weight: 600;
             color: #4d3e33;
             
             border-radius: 16px;
-            /* 果冻白色的圆润底座 */
             background: #ffffff;
             
-            /* 3D 高光与底部阴影，让方块凸起 */
             box-shadow: 
                 inset 0 -4px 6px rgba(180, 150, 130, 0.15),
                 0 4px 6px rgba(100, 80, 70, 0.1);
             
             transition: all 0.1s ease;
             position: relative;
-            /* 透明轮廓+高光边缘 */
             border: 1px solid rgba(255, 255, 255, 0.9); 
         }
 
-        /* 
-           利用伪元素增加左上角的【高光点】，还原图片中果冻的高级质感。
-           【注】：当用户填入数字时，高光仍然保留，保证字体清晰的立体感。
-        */
+        /* 左上角的高光点 */
         table.sudoku td::before {
             content: '';
             position: absolute;
-            top: 3px;
-            left: 8px;
-            width: 14px;
-            height: 10px;
+            top: 8%;
+            left: 12%;
+            width: 25%;
+            height: 20%;
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 100%);
             border-radius: 50%;
             pointer-events: none;
@@ -161,30 +166,26 @@
             opacity: 0.8;
         }
         table.sudoku td.given::before {
-            opacity: 0.5; /* 给定数字稍微暗一点，凸显区分度 */
+            opacity: 0.5;
         }
 
-        /* 模拟图片中的 3x3 宫格加粗分隔（通过增大四周单元格的阴影） */
+        /* 模拟 3x3 宫格分隔线 */
         table.sudoku td:nth-child(3n) {
-            margin-right: 0px;
-            border-right: 3px solid rgba(240, 226, 214, 0.8);
+            border-right: 0.3vw solid rgba(240, 226, 214, 0.8);
             box-shadow: inset -2px 0 4px rgba(140, 120, 100, 0.08), inset 0 -4px 6px rgba(180, 150, 130, 0.15), 0 4px 6px rgba(100, 80, 70, 0.1);
         }
         table.sudoku td:nth-child(3n+1) {
-            margin-left: 0px;
-            border-left: 3px solid rgba(240, 226, 214, 0.8);
+            border-left: 0.3vw solid rgba(240, 226, 214, 0.8);
         }
         table.sudoku tr:nth-child(3n) td {
-            margin-bottom: 0px;
-            border-bottom: 3px solid rgba(240, 226, 214, 0.8);
+            border-bottom: 0.3vw solid rgba(240, 226, 214, 0.8);
             box-shadow: inset 0 -2px 4px rgba(140, 120, 100, 0.08), inset 0 -4px 6px rgba(180, 150, 130, 0.15), 0 4px 6px rgba(100, 80, 70, 0.1);
         }
         table.sudoku tr:nth-child(3n+1) td {
-            margin-top: 0px;
-            border-top: 3px solid rgba(240, 226, 214, 0.8);
+            border-top: 0.3vw solid rgba(240, 226, 214, 0.8);
         }
 
-        /* ========== 单元格状态与颜色 ========== */
+        /* ========== 单元格状态 ========== */
         table.sudoku td.given {
             color: #6d4c3a;
             background: #f9f3ed;
@@ -198,10 +199,8 @@
             background: #f2fdf8;
         }
         
-        /* 选中高亮：增加外圈果冻光晕 */
         table.sudoku td.selected {
             background: #fff3eb !important;
-            /* 模拟软糖按下去的效果 */
             transform: scale(0.95); 
             box-shadow: 0 0 0 4px rgba(255, 210, 170, 0.4), inset 0 -4px 6px rgba(200, 160, 130, 0.2);
         }
@@ -225,19 +224,18 @@
         /* ========== 候选数标记 ========== */
         .candidate-mark {
             position: absolute;
-            /* 调整位置避开左上角高光 */
-            top: 4px;
-            right: 5px;
-            font-size: 0.6rem;
+            top: 10%;
+            right: 10%;
+            font-size: 0.55rem;
             font-weight: 600;
             color: #a5836a;
-            line-height: 1.2;
+            line-height: 1.1;
             text-align: right;
             pointer-events: none;
             background: transparent;
             letter-spacing: 0.2px;
             opacity: 0.9;
-            max-width: 32px;
+            max-width: 70%;
             white-space: pre-wrap;
             word-break: break-all;
             z-index: 5;
@@ -481,25 +479,49 @@
             padding: 30px 0;
         }
 
-        /* ========== 响应式适配 ========== */
+        /* ========== 移动端适配 (字数优化) ========== */
         @media (max-width: 550px) {
             .container { padding: 1.2rem; border-radius: 40px;}
-            table.sudoku td { width: 42px; height: 42px; font-size: 1.2rem; border-radius: 12px;}
-            table.sudoku td::before { top: 1px; left: 4px; width: 10px; height: 8px;}
+            table.sudoku {
+                border-spacing: 3px;
+                padding: 3px;
+            }
+            table.sudoku td {
+                min-width: 30px;
+                min-height: 30px;
+                max-width: 36px;
+                max-height: 36px;
+                width: 8vw;
+                height: 8vw;
+                font-size: 1.1rem; /* 手机端较小字号，视觉不拥挤 */
+                border-radius: 10px;
+            }
+            table.sudoku td::before { top: 2px; left: 4px; width: 8px; height: 6px;}
             .num-btn { width: 38px; height: 38px; font-size: 1rem; }
-            .candidate-mark { font-size: 0.5rem; top: 1px; right: 2px; max-width: 26px; }
+            /* 手机端候选数改得更小一点 */
+            .candidate-mark { font-size: 0.45rem; top: 1px; right: 2px; max-width: 26px; }
             .num-btn.clear-btn { width: 48px; font-size: 0.8rem; }
             .num-btn.mark-btn { width: 70px; font-size: 0.75rem; }
             .modal { padding: 20px; }
             .btn { padding: 6px 14px; font-size: 0.8rem;}
         }
-        @media (max-width: 420px) {
-            table.sudoku td { width: 34px; height: 34px; font-size: 0.9rem; border-radius: 8px;}
-            table.sudoku td::before { top: 1px; left: 3px; width: 8px; height: 6px;}
-            .num-btn { width: 32px; height: 32px; font-size: 0.9rem; }
-            .candidate-mark { font-size: 0.4rem; top: 1px; right: 1px; max-width: 20px; }
+        
+        /* 针对更极端的超小屏手机 */
+        @media (max-width: 400px) {
             .container { padding: 0.8rem; border-radius: 30px;}
-            .board-wrapper { padding: 10px; border-radius: 28px;}
+            table.sudoku td {
+                min-width: 24px;
+                min-height: 24px;
+                max-width: 30px;
+                max-height: 30px;
+                width: 7.5vw;
+                height: 7.5vw;
+                font-size: 0.85rem; /* 超小屏再降一点 */
+                border-radius: 8px;
+            }
+            .board-wrapper { padding: 6px; border-radius: 20px;}
+            .num-btn { width: 32px; height: 32px; font-size: 0.9rem; }
+            .candidate-mark { font-size: 0.35rem; top: 0px; right: 0px; max-width: 16px; }
             .num-btn.clear-btn { width: 42px; font-size: 0.7rem; }
             .num-btn.mark-btn { width: 58px; font-size: 0.7rem; }
         }
